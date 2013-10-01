@@ -10,3 +10,5 @@ $stringOperations->maximumDeviation = 0;
 foreach ($testArray as $testString) {
     $output[$testString] = $stringOperations->truncate($testString, 3, '', '');
 }
+
+var_dump($output);

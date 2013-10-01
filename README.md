@@ -40,6 +40,8 @@ Version History
 
 * 0.1:
     * Created class
+* 0.1.1:
+    * Documentation fixes
 
 Contact the author
 -------
