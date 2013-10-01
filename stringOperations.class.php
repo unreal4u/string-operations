@@ -9,10 +9,23 @@ namespace u4u;
  */
 class stringOperations {
     /**
-     * The maximum offset a string is allowed to pass after the limit has been reached
+     * The maximum deviation a string is allowed to pass after the limit has been reached, in percentage
      * @var int
      */
-    public $maximumOffset = 10;
+    public $maximumDeviation = 10;
+
+    /**
+     * The default is to assume we have no intl extension installed
+     * @var boolean
+     */
+    private $_intlExtensionInstalled = false;
+
+    public function __construct($charset='UTF-8') {
+        if (function_exists('mb_strlen')) {
+            $this->_intlExtensionInstalled = true;
+            mb_internal_encoding($charset);
+        }
+    }
 
     /**
      * Gets the (real) size of a string. If mb_strlen is available, it uses that value, else it will use std strlen
@@ -21,7 +34,7 @@ class stringOperations {
      * @return int
      */
     private function _strlen($string) {
-        if (function_exists('mb_strlen')) {
+        if ($this->_intlExtensionInstalled) {
             $size = mb_strlen($string);
         } else {
             $size = strlen($string);
@@ -31,16 +44,34 @@ class stringOperations {
     }
 
     /**
+     * Gets the length of a string
+     *
+     * @param unknown_type $string
+     * @param unknown_type $delimiter
+     * @param unknown_type $limit
+     * @return number
+     */
+    protected function _strpos($string, $delimiter, $limit) {
+        if ($this->_intlExtensionInstalled) {
+            $return = mb_strpos($string, $delimiter, $limit);
+        } else {
+            $return = strpos($string, $delimiter, $limit);
+        }
+
+        return $return;
+    }
+
+    /**
      * Gets the absolute maximum of characters that are allowed, or any number below that
      *
      * @param int $limit
      * @param int $number
      * @return int
      */
-    private function _getMaximumOffset($limit, $number=0) {
+    protected function _getMaximumOffset($limit, $number=0) {
         // Absolute maximum number of characters
-        $maxCharacterLimit = ((100 + $this->maximumOffset) * $limit) / 100;
-        if ($number < $maxCharacterLimit) {
+        $maxCharacterLimit = ceil(((100 + $this->maximumDeviation) * $limit) / 100);
+        if ($number !== false && $number < $maxCharacterLimit) {
             $maxCharacterLimit = $number;
         }
 
@@ -63,8 +94,16 @@ class stringOperations {
         $stringLength = $this->_strlen($string);
 
         if ($stringLength > $limit) {
-            $until = $this->_getMaximumOffset($limit, strpos($string, $delimiter, $limit));
-            $return = substr($string, 0, $until).$append;
+            $until = $this->_getMaximumOffset($limit, $this->_strpos($string, $delimiter, $limit));
+            if ($this->_intlExtensionInstalled) {
+                $return = mb_substr($string, 0, $until);
+            } else {
+                $return = substr($string, 0, $until);
+            }
+
+            if ($return !== $string) {
+                   $return .= $append;
+            }
         }
 
         return $return;
