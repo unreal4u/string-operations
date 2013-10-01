@@ -16,7 +16,11 @@ class stringOperationsTest extends \PHPUnit_Framework_TestCase {
      */
     protected function setUp() {
         parent::setUp();
-        $this->stringOperations = new u4u\stringOperations();
+        try {
+            $this->stringOperations = new u4u\stringOperations();
+        } catch (\Exception $e) {
+            $this->markTestSkipped('mbstring not installed');
+        }
     }
 
     /**
@@ -50,6 +54,22 @@ class stringOperationsTest extends \PHPUnit_Framework_TestCase {
         $mapValues[] = array('hello-bye-cruel-world', 10, '-', ':', 25, 'hello-bye-cru:');
         // "Normal" case
         $mapValues[] = array('this is a bigger text with a lot of spaces in it', 15, ' ', '...', 10, 'this is a bigger...');
+        // Setting the delimiter just after a space but without enough deviation to fit until the next word
+        $mapValues[] = array('this is a bigger text with a lot of spaces in it', 17, ' ', '...', 10, 'this is a bigger te...');
+        // Special UTF-8 chars testing
+        $mapValues[] = array('NormalText', 3, '', '', 0, 'Nor');
+        $mapValues[] = array('Canñete', 3, '', '', 0, 'Can');
+        $mapValues[] = array('e', 3, '', '', 0, 'e');
+        $mapValues[] = array('', 3, '', '', 0, '');
+        // 2 bytes chars
+        $mapValues[] = array('Cañete', 3, '', '', 0, 'Cañ');
+        $mapValues[] = array('Föllinge', 3, '', '', 0, 'Föl');
+        $mapValues[] = array('ÑÖÑÚ', 3, '', '', 0, 'ÑÖÑ');
+        // 3 bytes chars
+        $mapValues[] = array('漢A字BC', 3, '', '', 0, '漢A字');
+        $mapValues[] = array('汉A字BC', 3, '', '', 0, '汉A字');
+        // 4 bytes chars
+        $mapValues[] = array('𠜎𠜱𠝹𠱓', 3, '', '', 0, '𠜎𠜱𠝹');
 
         return $mapValues;
     }

@@ -14,48 +14,26 @@ class stringOperations {
      */
     public $maximumDeviation = 10;
 
-    /**
-     * The default is to assume we have no intl extension installed
-     * @var boolean
-     */
-    private $_intlExtensionInstalled = false;
-
     public function __construct($charset='UTF-8') {
-        if (function_exists('mb_strlen')) {
-            $this->_intlExtensionInstalled = true;
+        if (function_exists('mb_internal_encoding')) {
             mb_internal_encoding($charset);
+        } else {
+            throw new \Exception('mbstring extension must be installed!');
         }
     }
 
     /**
-     * Gets the (real) size of a string. If mb_strlen is available, it uses that value, else it will use std strlen
+     * Gets the (real) length of a string
      *
      * @param string $string
+     * @param string $delimiter
+     * @param int $limit
      * @return int
      */
-    private function _strlen($string) {
-        if ($this->_intlExtensionInstalled) {
-            $size = mb_strlen($string);
-        } else {
-            $size = strlen($string);
-        }
-
-        return $size;
-    }
-
-    /**
-     * Gets the length of a string
-     *
-     * @param unknown_type $string
-     * @param unknown_type $delimiter
-     * @param unknown_type $limit
-     * @return number
-     */
     protected function _strpos($string, $delimiter, $limit) {
-        if ($this->_intlExtensionInstalled) {
+        $return = $limit;
+        if ($delimiter !== '') {
             $return = mb_strpos($string, $delimiter, $limit);
-        } else {
-            $return = strpos($string, $delimiter, $limit);
         }
 
         return $return;
@@ -91,15 +69,11 @@ class stringOperations {
      */
     public function truncate($string, $limit=150, $delimiter=' ', $append='...') {
         $return = $string;
-        $stringLength = $this->_strlen($string);
+        $stringLength = mb_strlen($string);
 
         if ($stringLength > $limit) {
             $until = $this->_getMaximumOffset($limit, $this->_strpos($string, $delimiter, $limit));
-            if ($this->_intlExtensionInstalled) {
-                $return = mb_substr($string, 0, $until);
-            } else {
-                $return = substr($string, 0, $until);
-            }
+            $return = mb_substr($string, 0, $until);
 
             if ($return !== $string) {
                    $return .= $append;
