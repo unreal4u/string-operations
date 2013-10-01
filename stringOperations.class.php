@@ -14,6 +14,12 @@ class stringOperations {
      */
     public $maximumDeviation = 10;
 
+    /**
+     * Constructor
+     *
+     * @param string $charset The charset we will be using for all our operations. Defaults to "UTF-8"
+     * @throws \Exception If mbstring extension is not installed, this will throw an exception
+     */
     public function __construct($charset='UTF-8') {
         if (function_exists('mb_internal_encoding')) {
             mb_internal_encoding($charset);
@@ -23,7 +29,8 @@ class stringOperations {
     }
 
     /**
-     * Gets the (real) length of a string
+     * Gets the length of a string and if no delimiter is defined, it will set it until the end of what the string
+     * should be
      *
      * @param string $string
      * @param string $delimiter
@@ -75,6 +82,7 @@ class stringOperations {
             $until = $this->_getMaximumOffset($limit, $this->_strpos($string, $delimiter, $limit));
             $return = mb_substr($string, 0, $until);
 
+            // Do not append if the resulting string is exactly the same as it came in
             if ($return !== $string) {
                    $return .= $append;
             }

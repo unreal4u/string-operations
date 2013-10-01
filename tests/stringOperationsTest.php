@@ -56,7 +56,7 @@ class stringOperationsTest extends \PHPUnit_Framework_TestCase {
         $mapValues[] = array('this is a bigger text with a lot of spaces in it', 15, ' ', '...', 10, 'this is a bigger...');
         // Setting the delimiter just after a space but without enough deviation to fit until the next word
         $mapValues[] = array('this is a bigger text with a lot of spaces in it', 17, ' ', '...', 10, 'this is a bigger te...');
-        // Special UTF-8 chars testing
+        // Special UTF-8 chars testing, set all these tests to cut at exactly one point in the string
         $mapValues[] = array('NormalText', 3, '', '', 0, 'Nor');
         $mapValues[] = array('Canñete', 3, '', '', 0, 'Can');
         $mapValues[] = array('e', 3, '', '', 0, 'e');
