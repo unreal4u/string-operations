@@ -42,6 +42,8 @@ Version History
     * Created class
 * 0.1.1:
     * Documentation fixes
+* 0.2.0:
+    * Added decomposeCompleteEmail() function and unit tests for it
 
 Contact the author
 -------
