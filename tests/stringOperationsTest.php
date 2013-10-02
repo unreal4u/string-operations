@@ -82,4 +82,46 @@ class stringOperationsTest extends \PHPUnit_Framework_TestCase {
         $result = $this->stringOperations->truncate($string, $limit, $delimiter, $append);
         $this->assertEquals($result, $expected);
     }
+
+    /**
+     * Data provider for test_decomposeCompleteEMail
+     *
+     * @return array
+     */
+    public function provider_decomposeCompleteEmail() {
+        // Invalid data
+        $mapValues[] = array(null, array('name' => '', 'email' => ''));
+        $mapValues[] = array(true, array('name' => '', 'email' => ''));
+        $mapValues[] = array(false, array('name' => '', 'email' => ''));
+        $mapValues[] = array(null, array('name' => '', 'email' => ''));
+        $mapValues[] = array(1, array('name' => '', 'email' => ''));
+        $mapValues[] = array(3.1415, array('name' => '', 'email' => ''));
+        $mapValues[] = array('Hello world', array('name' => '', 'email' => ''));
+
+        // "Valid" data
+        $mapValues[] = array('my@name.com', array('name' => '', 'email' => 'my@name.com'));
+        $mapValues[] = array('my%40name.com', array('name' => '', 'email' => 'my@name.com'));
+        $mapValues[] = array('My+Name+%3Cmy%40name.com%3E', array('name' => 'My Name', 'email' => 'my@name.com'));
+        $mapValues[] = array('+%22My%22+%3Cmy%40name.com%3E', array('name' => 'My', 'email' => 'my@name.com'));
+        $mapValues[] = array('=?utf-8?B?5L2p5ae/?= <my@name.com.tw>', array('name' => '佩姿', 'email' => 'my@name.com.tw'));
+        $mapValues[] = array('=?ISO-8859-1?Q?B=F8lla?=, med =?ISO-8859-1?Q?=F8l?= i baggen <my@name.com.tw>', array('name' => 'Bølla , med øl i baggen', 'email' => 'my@name.com.tw'));
+        $mapValues[] = array('=?iso-8859-1?Q?B=F8lla?=, med =?iso-8859-1?Q?=F8l?= i baggen <my@name.com.tw>', array('name' => 'Bølla , med øl i baggen', 'email' => 'my@name.com.tw'));
+        $mapValues[] = array('=?US-ASCII?Q?Keith_Moore?= <moore@cs.utk.edu>', array('name' => 'Keith Moore', 'email' => 'moore@cs.utk.edu'));
+        $mapValues[] = array('=?ISO-8859-1?Q?Andr=E9?= Pirard <PIRARD@vm1.ulg.ac.be>', array('name' => 'André Pirard', 'email' => 'PIRARD@vm1.ulg.ac.be'));
+        $mapValues[] = array('My Name <my@name.com>', array('name' => 'My Name', 'email' => 'my@name.com'));
+        $mapValues[] = array('"My Name" <my@name.com>', array('name' => 'My Name', 'email' => 'my@name.com'));
+        $mapValues[] = array(' "My" <my@name.com.ar>', array('name' => 'My', 'email' => 'my@name.com.ar'));
+        $mapValues[] = array('"My" < my@name.com> ', array('name' => 'My', 'email' => 'my@name.com'));
+        $mapValues[] = array(' "My"    <  my@name.com >   ', array('name' => 'My', 'email' => 'my@name.com'));
+
+        return $mapValues;
+    }
+
+    /**
+     * @dataProvider provider_decomposeCompleteEmail
+     */
+    public function test_decomposeCompleteEmail($email, $expected) {
+        $result = $this->stringOperations->decomposeCompleteEmail($email);
+        $this->assertEquals($result, $expected);
+    }
 }

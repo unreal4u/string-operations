@@ -15,16 +15,28 @@ class stringOperations {
     public $maximumDeviation = 10;
 
     /**
+     * The charset we will be working with
+     * @var string
+     */
+    public $charset = 'UTF-8';
+
+    /**
      * Constructor
      *
      * @param string $charset The charset we will be using for all our operations. Defaults to "UTF-8"
      * @throws \Exception If mbstring extension is not installed, this will throw an exception
+     * @throws \Exception If imap extension is not installed, this will throw an exception
      */
     public function __construct($charset='UTF-8') {
         if (function_exists('mb_internal_encoding')) {
             mb_internal_encoding($charset);
+            $this->charset = mb_internal_encoding();
         } else {
-            throw new \Exception('mbstring extension must be installed!');
+            throw new \Exception('mbstring extension must be installed');
+        }
+
+        if (!function_exists('imap_list')) {
+            throw new \Exception('imap extension must be installed');
         }
     }
 
@@ -86,6 +98,53 @@ class stringOperations {
             if ($return !== $string) {
                    $return .= $append;
             }
+        }
+
+        return $return;
+    }
+
+    protected function _convertCharset($from, $to, $text) {
+        switch ($from) {
+            case 'default':
+                $from = $this->charset;
+            break;
+        }
+
+        $return = $text;
+        if ($from != $to) {
+            $return = iconv($from, $to, $text);
+        }
+
+        return $return;
+    }
+
+    /**
+     * Decomposes a RFC5322 email address into an array with the 2 elements apart
+     *
+     * Can handle with unclean data
+     *
+     * @param string $email
+     * @return array Returns array('name' => 'XX', 'email' => 'YY');
+     */
+    public function decomposeCompleteEmail($email) {
+        $return = array('name' => '', 'email' => '');
+        $email = urldecode($email);
+        if (is_string($email) && mb_strpos($email, '@') !== false) {
+            $return['email'] = trim(str_replace(array('<', '>'), '', mb_substr($email, mb_strrpos($email, '<'))));
+            $decomposedName  = trim(str_replace('"', '', mb_substr($email, 0, mb_strrpos($email, '<'))));
+
+            if (mb_strpos($decomposedName, '=?') === 0) {
+                $decodedHeader = imap_mime_header_decode($decomposedName);
+                if (!empty($decodedHeader[0]->text)) {
+                    $entireName = '';
+                    foreach ($decodedHeader as $namePart) {
+                        $entireName .= trim($this->_convertCharset($namePart->charset, $this->charset, $namePart->text)).' ';
+                    }
+                    $decomposedName = trim($entireName);
+                }
+            }
+
+            $return['name'] = $decomposedName;
         }
 
         return $return;
