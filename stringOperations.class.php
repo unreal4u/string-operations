@@ -103,6 +103,16 @@ class stringOperations {
         return $return;
     }
 
+    /**
+     * Converts from one charset to another
+     *
+     * @TODO Test this properly
+     *
+     * @param string $from
+     * @param string $to
+     * @param string $text
+     * @return string
+     */
     protected function _convertCharset($from, $to, $text) {
         switch ($from) {
             case 'default':

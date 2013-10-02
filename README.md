@@ -34,6 +34,8 @@ $result = $stringOperations->truncate('this is a bigger text', 15);
 Pending
 ---------
 * Search for more loose functions spattered around my codebase
+* Improve the usage of the internal used charset
+* Consistent usage of the class and it subcomponents
 
 Version History
 ----------
@@ -44,6 +46,8 @@ Version History
     * Documentation fixes
 * 0.2.0:
     * Added decomposeCompleteEmail() function and unit tests for it
+* 0.2.2:
+    * Documentation update
 
 Contact the author
 -------
