@@ -124,4 +124,34 @@ class stringOperationsTest extends \PHPUnit_Framework_TestCase {
         $result = $this->stringOperations->decomposeCompleteEmail($email);
         $this->assertEquals($result, $expected);
     }
+
+    /**
+     * Data provider for test_createSlug
+     *
+     * @return array
+     */
+    public function provider_createSlug() {
+        $mapValues[] = array('hello', false, 'hello');
+        $mapValues[] = array('hello', true, 'hello');
+        $mapValues[] = array('/hello/', false, '/hello/');
+        $mapValues[] = array('/hello/', true, 'hello');
+        $mapValues[] = array('hello/world', false, 'hello/world');
+        $mapValues[] = array('hello/world', true, 'hello-world');
+        $mapValues[] = array('hélló wórld', false, 'hello-world');
+        $mapValues[] = array('hélló wórld', true, 'hello-world');
+        $mapValues[] = array('hello-----world', false, 'hello-world');
+        $mapValues[] = array('hello-----world', true, 'hello-world');
+        $mapValues[] = array('hello/////world', false, 'hello/world');
+        $mapValues[] = array('hello/////world', true, 'hello-world');
+
+        return $mapValues;
+    }
+
+    /**
+     * @dataProvider provider_createSlug
+     */
+    public function test_createSlug($string, $convertSlash, $expected) {
+        $result = $this->stringOperations->createSlug($string, $convertSlash);
+        $this->assertEquals($result, $expected);
+    }
 }

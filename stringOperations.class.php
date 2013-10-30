@@ -131,7 +131,8 @@ class stringOperations {
     /**
      * Decomposes a RFC5322 email address into an array with the 2 elements apart
      *
-     * Can handle with unclean data
+     * Can handle with unclean data. This function does NOT use the imap_rfc822_parse_adrlist() function because of some
+     * problems while handling international email addresses within that function
      *
      * @param string $email
      * @return array Returns array('name' => 'XX', 'email' => 'YY');
@@ -155,6 +156,70 @@ class stringOperations {
             }
 
             $return['name'] = $decomposedName;
+        }
+
+        return $return;
+    }
+
+    /**
+     * Creates a slug from a string
+     *
+     * Although copied from another developer, this function has been rewritten to support leaving slashes intact. as an
+     * optional function argument
+     *
+     * @author alix.axel@gmail.com - http://stackoverflow.com/questions/2103797/url-friendly-username-in-php/2103815#2103815
+     * @author Camilo Sperberg
+     *
+     * @param string $string The string from which we want to create the slug from
+     * @param boolean $convertSlash Whether slashes will be converted to hyphens. Defaults to true
+     * @return string Returns the slug, ready to be used as an url, if string is not valid, will return an empty string
+     */
+    public function createSlug($string='', $convertSlash=true) {
+        $return = '';
+        // Only if we have a valid string and the same is not empty
+        if ((is_string($string) || is_numeric($string)) && $string != '') {
+            $string = str_ireplace('&amp;', '&', $string);
+
+            $return = strtolower(trim(preg_replace(
+                    '~[^0-9a-z/]+~i',
+                    '-',
+                    html_entity_decode(preg_replace(
+                            '~&([a-z]{1,2})(?:acute|cedil|circ|grave|lig|orn|ring|th|tilde|uml);~i',
+                            '$1',
+                            htmlentities($string, ENT_QUOTES, 'UTF-8')),
+                            ENT_QUOTES,
+                            'UTF-8')),
+                    '-')
+            );
+
+            // Do the intensive labor only if we have a string left to do something
+            if ($return != '') {
+                if ($convertSlash) {
+                    // If we want to convert slashes to hyphens, a straightforward replace will do the job
+                    $return = trim(preg_replace(array('[/]', '/-+/'), '-', $return), '-');
+                } else {
+                    // Check whether the original string ends with a slash
+                    $endsWithSlash = false;
+                    // At this point, it is save to use PHP's main functions because all multibyte strings will already be stripped out
+                    if (strrpos($return, '/') == strlen($return) - 1) {
+                        $endsWithSlash = true;
+                    }
+                    // Tear apart the string and whipe out some not-needed chars
+                    $tmpReturn = explode('/', $return);
+                    $return = '';
+                    foreach($tmpReturn AS $stringPart) {
+                        $return .= trim($stringPart, '-').'/';
+                    }
+
+                    // Finally, replace all extra slashes, including the now new end slash
+                    $return = substr(preg_replace('/\/+/', '/', $return), 0, -1);
+
+                    // Restore the last slash but only if it was present
+                    if ($endsWithSlash) {
+                        $return .= '/';
+                    }
+                }
+            }
         }
 
         return $return;
