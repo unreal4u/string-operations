@@ -1,4 +1,4 @@
-stringOperations.class.php
+stringOperations.php
 ======
 
 Credits
@@ -20,8 +20,8 @@ This package is a collection of functions related to string manipulation.
 Basic usage
 ----------
 
-<pre>include('stringOperations.class.php');
-$stringOperations = new stringOperations();
+<pre>include('src/unreal4u/stringOperations.php');
+$stringOperations = new unreal4u\stringOperations();
 $result = $stringOperations->truncate('this is a bigger text', 15);
 </pre>
 
@@ -30,6 +30,33 @@ $result = $stringOperations->truncate('this is a bigger text', 15);
  this is a bigger...
  </pre>
 * Please see examples and PHPUnit tests for more options and advanced usage
+
+Composer
+----------
+
+This class has support for Composer install. Just add the following section to your composer.json with:
+
+<pre>
+{
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/unreal4u/stringOperations"
+        }
+    ],
+    "require": {
+        "unreal4u/stringOperations": "@stable"
+    }
+}
+</pre>
+
+Now you can instantiate a new stringOperations class by executing:
+
+<pre>
+require('vendor/autoload.php');
+
+$stringOperations = new unreal4u\stringOperations();
+</pre>
 
 Pending
 ---------
@@ -48,6 +75,9 @@ Version History
     * Added decomposeCompleteEmail() function and unit tests for it
 * 0.2.2:
     * Documentation update
+* 0.3.0:
+    * Composer compatibility
+    * Documentation and examples update
 
 Contact the author
 -------

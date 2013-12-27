@@ -1,6 +1,6 @@
 <?php
 
-include('../stringOperations.class.php');
+include('../src/unreal4u/stringOperations.php');
 
 $testEmails = array(
     'my@name.com',
@@ -9,7 +9,7 @@ $testEmails = array(
     'My Name <my@name.com>',
 );
 
-$stringOperations = new u4u\stringOperations();
+$stringOperations = new unreal4u\stringOperations();
 
 foreach ($testEmails as $testEmail) {
     $output[] = $stringOperations->decomposeCompleteEmail($testEmail);

@@ -1,7 +1,7 @@
 <?php
 
-include('../stringOperations.class.php');
-$stringOperations = new u4u\stringOperations();
+include('../src/unreal4u/stringOperations.php');
+$stringOperations = new unreal4u\stringOperations();
 
 echo '<pre>';
 
@@ -20,3 +20,13 @@ print_r($text);
 echo '<br />'.str_repeat('-', 80).'<br />';
 
 echo '</pre>';
+
+
+$testArray = array('Cañete', 'Föllinge', 'ÑÖÑÚ', '漢A字BC', '汉A字BC', '𠜎𠜱𠝹𠱓');
+$stringOperations->maximumDeviation = 0;
+
+foreach ($testArray as $testString) {
+    $output[$testString] = $stringOperations->truncate($testString, 3, '', '');
+}
+
+var_dump($output);

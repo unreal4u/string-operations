@@ -1,5 +1,5 @@
 <?php
-require_once '../stringOperations.class.php';
+require_once '../src/unreal4u/stringOperations.php';
 require_once 'PHPUnit/Framework/TestCase.php';
 
 /**
@@ -17,7 +17,7 @@ class stringOperationsTest extends \PHPUnit_Framework_TestCase {
     protected function setUp() {
         parent::setUp();
         try {
-            $this->stringOperations = new u4u\stringOperations();
+            $this->stringOperations = new unreal4u\stringOperations();
         } catch (\Exception $e) {
             $this->markTestSkipped('mbstring not installed');
         }

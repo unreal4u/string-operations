@@ -1,13 +1,24 @@
 <?php
 
-namespace u4u;
+namespace unreal4u;
 
 /**
  * Class that does several operations on strings to ensure data gets truncated properly
  *
- * @author unreal4u
+ * @package stringOperations
+ * @author Camilo Sperberg
+ * @copyright 2010 - 2014 Camilo Sperberg
+ * @version 0.3.0
+ * @license BSD License
  */
 class stringOperations {
+
+    /**
+     * The version of this class
+     * @var string
+     */
+    private $classVersion = '0.3.0';
+
     /**
      * The maximum deviation a string is allowed to pass after the limit has been reached, in percentage
      * @var int
@@ -38,6 +49,15 @@ class stringOperations {
         if (!function_exists('imap_list')) {
             throw new \Exception('imap extension must be installed');
         }
+    }
+
+    /**
+     * Returns a string with basic information of this class
+     *
+     * @return string
+     */
+    public function __toString() {
+        return basename(__FILE__).' v'.$this->classVersion.' by Camilo Sperberg - http://unreal4u.com/';
     }
 
     /**
@@ -76,6 +96,31 @@ class stringOperations {
     }
 
     /**
+     * Converts from one charset to another
+     *
+     * @TODO Test this properly
+     *
+     * @param string $from
+     * @param string $to
+     * @param string $text
+     * @return string
+     */
+    protected function _convertCharset($from, $to, $text) {
+        switch ($from) {
+            case 'default':
+                $from = $this->charset;
+            break;
+        }
+
+        $return = $text;
+        if ($from != $to) {
+            $return = iconv($from, $to, $text);
+        }
+
+        return $return;
+    }
+
+    /**
      * Truncates text to a given length after delimiter
      *
      * This function will truncate a string to a given length, but only a few characters after that word whenever a
@@ -98,31 +143,6 @@ class stringOperations {
             if ($return !== $string) {
                    $return .= $append;
             }
-        }
-
-        return $return;
-    }
-
-    /**
-     * Converts from one charset to another
-     *
-     * @TODO Test this properly
-     *
-     * @param string $from
-     * @param string $to
-     * @param string $text
-     * @return string
-     */
-    protected function _convertCharset($from, $to, $text) {
-        switch ($from) {
-            case 'default':
-                $from = $this->charset;
-            break;
-        }
-
-        $return = $text;
-        if ($from != $to) {
-            $return = iconv($from, $to, $text);
         }
 
         return $return;
@@ -180,6 +200,7 @@ class stringOperations {
         if ((is_string($string) || is_numeric($string)) && $string != '') {
             $string = str_ireplace('&amp;', '&', $string);
 
+            // @TODO Change hard-coded UTF-8 to $this->charset (and test!)
             $return = strtolower(trim(preg_replace(
                     '~[^0-9a-z/]+~i',
                     '-',
