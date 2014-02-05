@@ -78,6 +78,8 @@ Version History
 * 0.3.0:
     * Composer compatibility
     * Documentation and examples update
+* 0.3.1:
+    * Renamed repo and moved PHPUnit as dependency
 
 Contact the author
 -------

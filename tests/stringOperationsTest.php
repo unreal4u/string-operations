@@ -1,6 +1,6 @@
 <?php
-require_once '../src/unreal4u/stringOperations.php';
-require_once 'PHPUnit/Framework/TestCase.php';
+require '../src/unreal4u/stringOperations.php';
+require '../vendor/autoload.php';
 
 /**
  * stringOperations test case.

@@ -2,3 +2,6 @@
 .settings
 .project
 tests/report
+vendor
+# This package should work with any version of subpackages it needs
+composer.lock
