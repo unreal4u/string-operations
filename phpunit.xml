@@ -1,0 +1,19 @@
+<phpunit colors="true">
+    <filter>
+        <blacklist>
+            <directory suffix=".php">./vendor</directory>
+        </blacklist>
+    </filter>
+
+    <testsuite name="stringOperations">
+        <filter>
+            <whitelist processUncoveredFilesFromWhitelist="true">
+                <directory suffix=".php">./tests/</directory>
+            </whitelist>
+        </filter>
+    </testsuite>
+
+    <logging>
+        <log type="coverage-html" target="tests/report/" charset="UTF-8" yui="true" highlight="true" />
+    </logging>
+</phpunit>

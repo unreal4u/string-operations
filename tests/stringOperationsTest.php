@@ -1,6 +1,7 @@
 <?php
-require '../src/unreal4u/stringOperations.php';
-require '../vendor/autoload.php';
+
+require 'vendor/autoload.php';
+require 'src/unreal4u/stringOperations.php';
 
 /**
  * stringOperations test case.
