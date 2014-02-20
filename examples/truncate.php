@@ -30,3 +30,14 @@ foreach ($testArray as $testString) {
 }
 
 var_dump($output);
+
+var_dump('last one');
+$input = 'Hello, this must be some spectacular -a: test-';
+$stringOperations->maximumDeviation = 10;
+
+$firstOutput = $stringOperations->truncate($input, 39, array('-', ':', ' '));
+$secondOutput = $stringOperations->truncate($input, 39, array(':', '-', ' '));
+var_dump($firstOutput);
+var_dump($secondOutput);
+
+var_dump('all done');

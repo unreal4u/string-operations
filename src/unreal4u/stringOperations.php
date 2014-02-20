@@ -8,7 +8,7 @@ namespace unreal4u;
  * @package stringOperations
  * @author Camilo Sperberg
  * @copyright 2010 - 2014 Camilo Sperberg
- * @version 0.3.1
+ * @version 0.4.0
  * @license BSD License
  */
 class stringOperations {
@@ -17,7 +17,7 @@ class stringOperations {
      * The version of this class
      * @var string
      */
-    private $classVersion = '0.3.1';
+    private $classVersion = '0.4.0';
 
     /**
      * The maximum deviation a string is allowed to pass after the limit has been reached, in percentage
@@ -65,14 +65,19 @@ class stringOperations {
      * should be
      *
      * @param string $string
-     * @param string $delimiter
+     * @param array $delimiters One or more delimiters
      * @param int $limit
      * @return int
      */
-    protected function _strpos($string, $delimiter, $limit) {
+    protected function _strpos($string, array $delimiters=array(), $limit) {
         $return = $limit;
-        if ($delimiter !== '') {
-            $return = mb_strpos($string, $delimiter, $limit);
+        foreach ($delimiters as $delimiter) {
+            if (!empty($delimiter)) {
+                $tmp = mb_strpos($string, $delimiter, $limit);
+                if ($tmp < $return) {
+                    $return = $tmp;
+                }
+            }
         }
 
         return $return;
@@ -128,14 +133,18 @@ class stringOperations {
      *
      * @param string $string
      * @param int $limit Defaults to 150 characters
-     * @param string $delimiter Defaults to a space
+     * @param array $delimiter Defaults to a space
      * @param string $append Defaults to three dots
      */
-    public function truncate($string, $limit=150, $delimiter=' ', $append='...') {
+    public function truncate($string, $limit=150, $delimiter=array(' '), $append='...') {
         $return = $string;
         $stringLength = mb_strlen($string);
 
         if ($stringLength > $limit) {
+            if (is_string($delimiter)) {
+                $delimiter = array($delimiter);
+            }
+
             $until = $this->_getMaximumOffset($limit, $this->_strpos($string, $delimiter, $limit));
             $return = mb_substr($string, 0, $until);
 
