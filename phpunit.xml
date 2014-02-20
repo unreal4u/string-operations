@@ -14,6 +14,7 @@
     </testsuite>
 
     <logging>
-        <log type="coverage-html" target="tests/report/" charset="UTF-8" yui="true" highlight="true" />
+        <log type="coverage-html" target="tests/report/" charset="UTF-8" yui="false" highlight="false" />
+        <log type="coverage-text" target="php://stdout" showUncoveredFiles="false"/>
     </logging>
 </phpunit>

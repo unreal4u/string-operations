@@ -155,4 +155,12 @@ class stringOperationsTest extends \PHPUnit_Framework_TestCase {
         $result = $this->stringOperations->createSlug($string, $convertSlash);
         $this->assertEquals($result, $expected);
     }
+
+    /**
+     * Tests magic toString method
+     */
+    public function test___toString() {
+        $output = sprintf($this->stringOperations);
+        $this->assertStringStartsWith('stringOperations', $output);
+    }
 }
