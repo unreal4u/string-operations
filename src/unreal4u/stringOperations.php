@@ -150,7 +150,7 @@ class stringOperations {
 
             // Do not append if the resulting string is exactly the same as it came in
             if ($return !== $string) {
-                   $return .= $append;
+                $return .= $append;
             }
         }
 
