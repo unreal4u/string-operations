@@ -1,6 +1,7 @@
 <?php
-require '../src/unreal4u/stringOperations.php';
-require '../vendor/autoload.php';
+
+require 'vendor/autoload.php';
+require 'src/unreal4u/stringOperations.php';
 
 /**
  * stringOperations test case.
@@ -153,5 +154,13 @@ class stringOperationsTest extends \PHPUnit_Framework_TestCase {
     public function test_createSlug($string, $convertSlash, $expected) {
         $result = $this->stringOperations->createSlug($string, $convertSlash);
         $this->assertEquals($result, $expected);
+    }
+
+    /**
+     * Tests magic toString method
+     */
+    public function test___toString() {
+        $output = sprintf($this->stringOperations);
+        $this->assertStringStartsWith('stringOperations', $output);
     }
 }
