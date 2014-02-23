@@ -72,6 +72,10 @@ class stringOperationsTest extends \PHPUnit_Framework_TestCase {
         // 4 bytes chars
         $mapValues[20] = array('𠜎𠜱𠝹𠱓', 3, '', '', 0, '𠜎𠜱𠝹');
 
+        // Added on 2014-02-24, multiple delimiters
+        $mapValues[21] = array('Hello, this must be some spectacular -a: test-', 37, array('-', ':', ' '), '...', 10, 'Hello, this must be some spectacular ...');
+        $mapValues[21] = array('Hello, this must be some spectacular -a: test-', 37, array(':', '-', ' '), '...', 10, 'Hello, this must be some spectacular -a...');
+
         return $mapValues;
     }
 

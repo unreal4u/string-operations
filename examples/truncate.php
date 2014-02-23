@@ -31,13 +31,15 @@ foreach ($testArray as $testString) {
 
 var_dump($output);
 
-var_dump('last one');
 $input = 'Hello, this must be some spectacular -a: test-';
+var_dump(mb_strlen($input));
 $stringOperations->maximumDeviation = 10;
 
-$firstOutput = $stringOperations->truncate($input, 39, array('-', ':', ' '));
-$secondOutput = $stringOperations->truncate($input, 39, array(':', '-', ' '));
+$firstOutput = $stringOperations->truncate($input, 37, array('-', ':', ' '));
+$secondOutput = $stringOperations->truncate($input, 37, array(':', '-', ' '));
 var_dump($firstOutput);
+// Should give: Hello, this must be some spectacular ...
 var_dump($secondOutput);
+// Should give: Hello, this must be some spectacular -a...
 
 var_dump('all done');

@@ -74,8 +74,8 @@ class stringOperations {
         foreach ($delimiters as $delimiter) {
             if (!empty($delimiter)) {
                 $tmp = mb_strpos($string, $delimiter, $limit);
-                if ($tmp < $return) {
-                    $return = $tmp;
+                if ($tmp < $return || empty($tmp)) {
+                   $return = $tmp;
                 }
             }
         }
@@ -133,19 +133,19 @@ class stringOperations {
      *
      * @param string $string
      * @param int $limit Defaults to 150 characters
-     * @param array $delimiter Defaults to a space
+     * @param array $delimiters Defaults to a space
      * @param string $append Defaults to three dots
      */
-    public function truncate($string, $limit=150, $delimiter=array(' '), $append='...') {
+    public function truncate($string, $limit=150, $delimiters=array(' '), $append='...') {
         $return = $string;
         $stringLength = mb_strlen($string);
 
         if ($stringLength > $limit) {
-            if (is_string($delimiter)) {
-                $delimiter = array($delimiter);
+            if (is_string($delimiters)) {
+                $delimiters = array($delimiters);
             }
 
-            $until = $this->_getMaximumOffset($limit, $this->_strpos($string, $delimiter, $limit));
+            $until = $this->_getMaximumOffset($limit, $this->_strpos($string, $delimiters, $limit));
             $return = mb_substr($string, 0, $until);
 
             // Do not append if the resulting string is exactly the same as it came in
