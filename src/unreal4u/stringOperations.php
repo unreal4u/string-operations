@@ -8,7 +8,7 @@ namespace unreal4u;
  * @package stringOperations
  * @author Camilo Sperberg
  * @copyright 2010 - 2014 Camilo Sperberg
- * @version 0.3.1
+ * @version 0.3.2
  * @license BSD License
  */
 class stringOperations {
@@ -17,7 +17,7 @@ class stringOperations {
      * The version of this class
      * @var string
      */
-    private $classVersion = '0.3.1';
+    private $classVersion = '0.3.2';
 
     /**
      * The maximum deviation a string is allowed to pass after the limit has been reached, in percentage
