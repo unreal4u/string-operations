@@ -1,6 +1,5 @@
 <?php
 
-require 'vendor/autoload.php';
 require 'src/unreal4u/stringOperations.php';
 
 /**
