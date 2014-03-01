@@ -165,7 +165,7 @@ class stringOperations {
             $decomposedName  = trim(str_replace('"', '', mb_substr($email, 0, mb_strrpos($email, '<'))));
 
             if (mb_strpos($decomposedName, '=?') === 0) {
-                $decodedHeader = imap_mime_header_decode($decomposedName);
+                $decodedHeader = \imap_mime_header_decode($decomposedName);
                 if (!empty($decodedHeader[0]->text)) {
                     $entireName = '';
                     foreach ($decodedHeader as $namePart) {
