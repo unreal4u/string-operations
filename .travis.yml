@@ -10,4 +10,4 @@ matrix:
     - php: 5.6
 before_install:
   - sudo apt-get update
-  - sudo apt-get install php-imap
+  - sudo apt-get install php5-imap
