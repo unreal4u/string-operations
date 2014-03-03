@@ -87,7 +87,11 @@ Version History
     * Truncate function improvements and BC breaks
         * This function can now search backwards in the string
         * This function now supports multiple separators
-    * Excluded some things from a package
+    * Excluded some things from the auto generated release packages
+* 1.1.0:
+    * Class doesn't rely anymore on imap functions, so no more need for imap extension!
+    * Update to PHPUnit 4.0
+    * Added PHP 5.3 to the battery test
 
 Contact the author
 -------

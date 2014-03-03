@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * Main class definitions for string operations
+ */
 namespace unreal4u;
 
 /**
@@ -8,7 +11,7 @@ namespace unreal4u;
  * @package stringOperations
  * @author Camilo Sperberg
  * @copyright 2010 - 2014 Camilo Sperberg
- * @version 1.0.0
+ * @version 1.1.0
  * @license BSD License
  */
 class stringOperations {
@@ -17,7 +20,7 @@ class stringOperations {
      * The version of this class
      * @var string
      */
-    private $classVersion = '1.0.0';
+    private $classVersion = '1.1.0';
 
     /**
      * The maximum deviation a string is allowed to pass after the limit has been reached, in percentage
@@ -44,10 +47,6 @@ class stringOperations {
             $this->charset = mb_internal_encoding();
         } else {
             throw new \Exception('mbstring extension must be installed');
-        }
-
-        if (!function_exists('imap_list')) {
-            throw new \Exception('imap extension must be installed');
         }
     }
 
@@ -146,7 +145,7 @@ class stringOperations {
         }
 
         $return = $text;
-        if ($from != $to) {
+        if (strtoupper($from) !== strtoupper($to)) {
             $return = iconv($from, $to, $text);
         }
 
@@ -186,6 +185,65 @@ class stringOperations {
     }
 
     /**
+     * Default replacement rules for some common type of texts
+     *
+     * @param string $text
+     * @return Ambigous <NULL, \stdClass>
+     */
+    private function _straightForwardReplacement($text) {
+        $text = str_replace(array('=', "\t", "\n ", "\n"), '', $text);
+        $resultArray = null;
+
+        if (!empty($text)) {
+            $resultArray = new \stdClass();
+            $resultArray->charset = 'default';
+            $resultArray->text = $text;
+        }
+
+        return $resultArray;
+    }
+
+    /**
+     * Userland replacement for imap_mime_header_decode, doesn't require imap extension
+     *
+     * @param string $text
+     * @return StdClass Returns a standard class with decomposed headers
+     */
+    public function mimeHeaderDecode($text) {
+        $explodedText = explode('=?', $text);
+
+        foreach ($explodedText as $partialText) {
+            if (!empty($partialText)) {
+                $resultArray = new \stdClass();
+                $stringPart = explode('?', $partialText);
+
+                // Simplest of cases, just a straightforward replacement
+                if (empty($stringPart[1])) {
+                    $resultArray = $this->_straightForwardReplacement($stringPart[0]);
+                } else {
+                    $resultArray->charset = $stringPart[0];
+                    if ($stringPart[1] === 'Q' || $stringPart[1] === 'q') {
+                        $resultArray->text = quoted_printable_decode(str_replace('_', ' ', $stringPart[2]));
+                    } else {
+                        $resultArray->text = base64_decode($stringPart[2]);
+                    }
+                }
+
+                $finalResult[] = $resultArray;
+
+                if (!empty($stringPart[3])) {
+                    $resultArray = $this->_straightForwardReplacement($stringPart[3]);
+                    if (!empty($resultArray)) {
+                        $finalResult[] = $resultArray;
+                    }
+                }
+            }
+        }
+
+        return $finalResult;
+    }
+
+    /**
      * Decomposes a RFC5322 email address into an array with the 2 elements apart
      *
      * Can handle with unclean data. This function does NOT use the imap_rfc822_parse_adrlist() function because of some
@@ -202,7 +260,7 @@ class stringOperations {
             $decomposedName  = trim(str_replace('"', '', mb_substr($email, 0, mb_strrpos($email, '<'))));
 
             if (mb_strpos($decomposedName, '=?') === 0) {
-                $decodedHeader = \imap_mime_header_decode($decomposedName);
+                $decodedHeader = $this->mimeHeaderDecode($decomposedName);
                 if (!empty($decodedHeader[0]->text)) {
                     $entireName = '';
                     foreach ($decodedHeader as $namePart) {

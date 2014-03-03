@@ -140,6 +140,81 @@ class stringOperationsTest extends \PHPUnit_Framework_TestCase {
     }
 
     /**
+     * Data provider for test_mimeHeaderDecode
+     */
+    public function provider_mimeHeaderDecode() {
+        $mapValues[] = array('=?ISO-8859-1?Q?B=F8lla?=, med =?ISO-8859-1?Q?=F8l?= i baggen', array(
+            0 => createStdClass::__set_state(array('charset' => 'ISO-8859-1', 'text' => 'Bølla',)),
+            1 => createStdClass::__set_state(array('charset' => 'default', 'text' => ', med ',)),
+            2 => createStdClass::__set_state(array('charset' => 'ISO-8859-1', 'text' => 'øl',)),
+            3 => createStdClass::__set_state(array('charset' => 'default', 'text' => ' i baggen',)),
+        ));
+
+        $mapValues[] = array('=?utf-8?B?5L2p5ae/?=', array(
+            0 => createStdClass::__set_state(array('charset' => 'utf-8', 'text' => '佩姿',)),
+        ));
+
+        $mapValues[] = array('=?iso-8859-1?Q?B=F8lla?=, med =?ISO-8859-1?Q?=F8l?= i baggen', array(
+            0 => createStdClass::__set_state(array('charset' => 'iso-8859-1', 'text' => 'Bølla',)),
+            1 => createStdClass::__set_state(array('charset' => 'default', 'text' => ', med ',)),
+            2 => createStdClass::__set_state(array('charset' => 'ISO-8859-1', 'text' => 'øl',)),
+            3 => createStdClass::__set_state(array('charset' => 'default', 'text' => ' i baggen',)),
+        ));
+
+        $mapValues[] = array('=?US-ASCII?Q?Keith_Moore?=', array(
+            0 => createStdClass::__set_state(array('charset' => 'US-ASCII', 'text' => 'Keith Moore',)),
+        ));
+
+        $mapValues[] = array('=?ISO-8859-1?Q?Andr=E9?= Pirard', array(
+            0 => createStdClass::__set_state(array('charset' => 'ISO-8859-1', 'text' => 'André',)),
+            1 => createStdClass::__set_state(array('charset' => 'default', 'text' => ' Pirard',)),
+        ));
+
+        // Copied from PHP source code, this is the only test in the whole codebase that tests imap_mime_header_decode()
+        $s = '=?UTF-8?Q?=E2=82=AC?=';
+        $header = "$s\n $s\n\t$s";
+        $mapValues[] = array($header, array(
+            0 => createStdClass::__set_state(array('charset' => 'UTF-8', 'text' => '€')),
+            1 => createStdClass::__set_state(array('charset' => 'UTF-8', 'text' => '€')),
+            2 => createStdClass::__set_state(array('charset' => 'UTF-8', 'text' => '€')),
+        ));
+
+        // From php.net, was problematic case 11 years ago
+        $mapValues[] = array('=?utf-7?Q?Petra_M+APw-ller?=', array(
+            0 => createStdClass::__set_state(array('charset' => 'utf-7', 'text' => 'Petra Müller')),
+        ));
+
+        $mapValues[] = array('=?utf-8?Q?Petra_M=C3=BCller?=', array(
+            0 => createStdClass::__set_state(array('charset' => 'utf-8', 'text' => 'Petra Müller')),
+        ));
+
+        // Don't forget the simplest of cases
+        $mapValues[] = array("=?ISO-8859-1?Q?Keld_J=F8rn_Simonsen?= <keld@example.com>", array(
+            0 => createStdClass::__set_state(array('charset' => 'ISO-8859-1', 'text' => 'Keld Jørn Simonsen')),
+            1 => createStdClass::__set_state(array('charset' => 'default', 'text' => ' <keld@example.com>')),
+        ));
+
+        $mapValues[] = array('Hello world', array(
+            0 => createStdClass::__set_state(array('charset' => 'default', 'text' => 'Hello world')),
+        ));
+
+        return $mapValues;
+    }
+
+    /**
+     * Tests mimeHeaderDecode
+     *
+     * @group mimeHeaderDecode
+     * @dataProvider provider_mimeHeaderDecode
+     * @param string $text
+     * @param stdClass $expected
+     */
+    public function test_mimeHeaderDecode($text, $expected) {
+        $result = $this->stringOperations->mimeHeaderDecode($text);
+        $this->assertEquals($expected, $result);
+    }
+
+    /**
      * Data provider for test_createSlug
      *
      * @return array

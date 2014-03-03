@@ -1,7 +1,9 @@
 .buildpath
 .settings
 .project
+*.DS_Store
 tests/report
 vendor
 # This package should work with any version of subpackages it needs
 composer.lock
+phpdoc/
