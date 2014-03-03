@@ -43,7 +43,7 @@ class stringOperationsTest extends \PHPUnit_Framework_TestCase {
         // Special case: truncate after 6 chars, with 5% deviation
         $mapValues[3] = array('hello bye', 6, ' ', '...', 5, 'hello b...');
         // Max 6 chars, with 100% deviation (which is in fact 12 chars)
-        $mapValues[4] = array('hello bye', 6, ' ', '...', 100, 'hello bye');
+        $mapValues[4] = array('hello bye', 6, ' ', '...', 100, 'hello...');
         // Max 10 chars, with 25% deviation
         $mapValues[5] = array('hello bye-cruel world', 10, ' ', '...', 25, 'hello bye-cru...');
         // Max 9 chars, 0% deviation, no appending string
@@ -51,11 +51,11 @@ class stringOperationsTest extends \PHPUnit_Framework_TestCase {
         // Max 12 chars, 0% deviation, no appending string
         $mapValues[7] = array('hello bye cruel world', 12, ' ', '', 0, 'hello bye cr');
         // Max 10 chars, 25% deviation, separator is a dash and appending string is a colon
-        $mapValues[8] = array('hello-bye-cruel-world', 10, '-', ':', 25, 'hello-bye-cru:');
+        $mapValues[8] = array('hello-bye-cruel-world', 10, '-', ':', 25, 'hello-bye:');
         // "Normal" case
         $mapValues[9] = array('this is a bigger text with a lot of spaces in it', 15, ' ', '...', 10, 'this is a bigger...');
         // Setting the delimiter just after a space but without enough deviation to fit until the next word
-        $mapValues[10] = array('this is a bigger text with a lot of spaces in it', 17, ' ', '...', 10, 'this is a bigger te...');
+        $mapValues[10] = array('this is a bigger text with a lot of spaces in it', 17, ' ', '...', 10, 'this is a bigger...');
         // Special UTF-8 chars testing, set all these tests to cut at exactly one point in the string
         $mapValues[11] = array('NormalText', 3, '', '', 0, 'Nor');
         $mapValues[12] = array('Canñete', 3, '', '', 0, 'Can');
@@ -74,6 +74,7 @@ class stringOperationsTest extends \PHPUnit_Framework_TestCase {
         // Added on 2014-02-24, multiple delimiters
         $mapValues[21] = array('Hello, this must be some spectacular -a: test-', 37, array('-', ':', ' '), '...', 10, 'Hello, this must be some spectacular ...');
         $mapValues[22] = array('Hello, this must be some spectacular -a: test-', 37, array(':', '-', ' '), '...', 10, 'Hello, this must be some spectacular -a...');
+        $mapValues[23] = array('Hello, this must be some spectacular a: test-',  37, array('-', ' ', ':'), '...', 10, 'Hello, this must be some spectacular...');
 
         return $mapValues;
     }

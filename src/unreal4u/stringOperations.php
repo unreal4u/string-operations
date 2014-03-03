@@ -8,7 +8,7 @@ namespace unreal4u;
  * @package stringOperations
  * @author Camilo Sperberg
  * @copyright 2010 - 2014 Camilo Sperberg
- * @version 0.4.0
+ * @version 1.0.0
  * @license BSD License
  */
 class stringOperations {
@@ -17,7 +17,7 @@ class stringOperations {
      * The version of this class
      * @var string
      */
-    private $classVersion = '0.4.0';
+    private $classVersion = '1.0.0';
 
     /**
      * The maximum deviation a string is allowed to pass after the limit has been reached, in percentage
@@ -69,13 +69,16 @@ class stringOperations {
      * @param int $limit
      * @return int
      */
-    protected function _strpos($string, array $delimiters, $limit) {
+    protected function _getBestCandidates($string, array $delimiters, $limit) {
         $candidates = array();
+
+        $minCharacterLimit = ceil(((100 - $this->maximumDeviation) * $limit) / 100);
         foreach ($delimiters as $delimiter) {
             if (!empty($delimiter)) {
-                $candidates[] = mb_strpos($string, $delimiter, $limit);
+                $candidates[] = mb_strpos($string, $delimiter, $minCharacterLimit);
             }
         }
+
         if (empty($candidates)) {
             $candidates[] = $limit;
         }
@@ -170,7 +173,7 @@ class stringOperations {
                 $delimiters = array($delimiters);
             }
 
-            $until = $this->_getMaximumOffset($limit, $this->_strpos($string, $delimiters, $limit));
+            $until = $this->_getMaximumOffset($limit, $this->_getBestCandidates($string, $delimiters, $limit));
             $return = mb_substr($string, 0, $until);
 
             // Do not append if the resulting string is exactly the same as it came in
