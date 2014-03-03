@@ -37,50 +37,58 @@ class stringOperationsTest extends \PHPUnit_Framework_TestCase {
      */
     public function provider_truncate() {
         // Max 10 chars, with 5% deviation
-        $mapValues[] = array('hellohello', 10, ' ', '...', 5, 'hellohello');
+        $mapValues[1] = array('hellohello', 10, ' ', '...', 5, 'hellohello');
         // Max 8 chars, with 5% deviation
-        $mapValues[] = array('hello bye', 8, ' ', '...', 5, 'hello bye');
+        $mapValues[2] = array('hello bye', 8, ' ', '...', 5, 'hello bye');
         // Special case: truncate after 6 chars, with 5% deviation
-        $mapValues[] = array('hello bye', 6, ' ', '...', 5, 'hello b...');
+        $mapValues[3] = array('hello bye', 6, ' ', '...', 5, 'hello b...');
         // Max 6 chars, with 100% deviation (which is in fact 12 chars)
-        $mapValues[] = array('hello bye', 6, ' ', '...', 100, 'hello bye');
+        $mapValues[4] = array('hello bye', 6, ' ', '...', 100, 'hello...');
         // Max 10 chars, with 25% deviation
-        $mapValues[] = array('hello bye-cruel world', 10, ' ', '...', 25, 'hello bye-cru...');
+        $mapValues[5] = array('hello bye-cruel world', 10, ' ', '...', 25, 'hello bye-cru...');
         // Max 9 chars, 0% deviation, no appending string
-        $mapValues[] = array('hello bye cruel world', 9, ' ', '', 0, 'hello bye');
+        $mapValues[6] = array('hello bye cruel world', 9, ' ', '', 0, 'hello bye');
         // Max 12 chars, 0% deviation, no appending string
-        $mapValues[] = array('hello bye cruel world', 12, ' ', '', 0, 'hello bye cr');
+        $mapValues[7] = array('hello bye cruel world', 12, ' ', '', 0, 'hello bye cr');
         // Max 10 chars, 25% deviation, separator is a dash and appending string is a colon
-        $mapValues[] = array('hello-bye-cruel-world', 10, '-', ':', 25, 'hello-bye-cru:');
+        $mapValues[8] = array('hello-bye-cruel-world', 10, '-', ':', 25, 'hello-bye:');
         // "Normal" case
-        $mapValues[] = array('this is a bigger text with a lot of spaces in it', 15, ' ', '...', 10, 'this is a bigger...');
+        $mapValues[9] = array('this is a bigger text with a lot of spaces in it', 15, ' ', '...', 10, 'this is a bigger...');
         // Setting the delimiter just after a space but without enough deviation to fit until the next word
-        $mapValues[] = array('this is a bigger text with a lot of spaces in it', 17, ' ', '...', 10, 'this is a bigger te...');
+        $mapValues[10] = array('this is a bigger text with a lot of spaces in it', 17, ' ', '...', 10, 'this is a bigger...');
         // Special UTF-8 chars testing, set all these tests to cut at exactly one point in the string
-        $mapValues[] = array('NormalText', 3, '', '', 0, 'Nor');
-        $mapValues[] = array('Canñete', 3, '', '', 0, 'Can');
-        $mapValues[] = array('e', 3, '', '', 0, 'e');
-        $mapValues[] = array('', 3, '', '', 0, '');
+        $mapValues[11] = array('NormalText', 3, '', '', 0, 'Nor');
+        $mapValues[12] = array('Canñete', 3, '', '', 0, 'Can');
+        $mapValues[13] = array('e', 3, '', '', 0, 'e');
+        $mapValues[14] = array('', 3, '', '', 0, '');
         // 2 bytes chars
-        $mapValues[] = array('Cañete', 3, '', '', 0, 'Cañ');
-        $mapValues[] = array('Föllinge', 3, '', '', 0, 'Föl');
-        $mapValues[] = array('ÑÖÑÚ', 3, '', '', 0, 'ÑÖÑ');
+        $mapValues[15] = array('Cañete', 3, '', '', 0, 'Cañ');
+        $mapValues[16] = array('Föllinge', 3, '', '', 0, 'Föl');
+        $mapValues[17] = array('ÑÖÑÚ', 3, '', '', 0, 'ÑÖÑ');
         // 3 bytes chars
-        $mapValues[] = array('漢A字BC', 3, '', '', 0, '漢A字');
-        $mapValues[] = array('汉A字BC', 3, '', '', 0, '汉A字');
+        $mapValues[18] = array('漢A字BC', 3, '', '', 0, '漢A字');
+        $mapValues[19] = array('汉A字BC', 3, '', '', 0, '汉A字');
         // 4 bytes chars
-        $mapValues[] = array('𠜎𠜱𠝹𠱓', 3, '', '', 0, '𠜎𠜱𠝹');
+        $mapValues[20] = array('𠜎𠜱𠝹𠱓', 3, '', '', 0, '𠜎𠜱𠝹');
+
+        // Added on 2014-02-24, multiple delimiters
+        $mapValues[21] = array('Hello, this must be some spectacular -a: test-', 37, array('-', ':', ' '), '...', 10, 'Hello, this must be some spectacular ...');
+        $mapValues[22] = array('Hello, this must be some spectacular -a: test-', 37, array(':', '-', ' '), '...', 10, 'Hello, this must be some spectacular -a...');
+        $mapValues[23] = array('Hello, this must be some spectacular a: test-',  37, array('-', ' ', ':'), '...', 10, 'Hello, this must be some spectacular...');
 
         return $mapValues;
     }
 
     /**
+     * Tests truncate function
+     *
      * @dataProvider provider_truncate
+     * @group truncate
      */
     public function test_truncate($string, $limit, $delimiter, $append, $deviation, $expected) {
         $this->stringOperations->maximumDeviation = $deviation;
         $result = $this->stringOperations->truncate($string, $limit, $delimiter, $append);
-        $this->assertEquals($result, $expected);
+        $this->assertEquals($expected, $result);
     }
 
     /**
@@ -90,39 +98,42 @@ class stringOperationsTest extends \PHPUnit_Framework_TestCase {
      */
     public function provider_decomposeCompleteEmail() {
         // Invalid data
-        $mapValues[] = array(null, array('name' => '', 'email' => ''));
-        $mapValues[] = array(true, array('name' => '', 'email' => ''));
-        $mapValues[] = array(false, array('name' => '', 'email' => ''));
-        $mapValues[] = array(null, array('name' => '', 'email' => ''));
-        $mapValues[] = array(1, array('name' => '', 'email' => ''));
-        $mapValues[] = array(3.1415, array('name' => '', 'email' => ''));
-        $mapValues[] = array('Hello world', array('name' => '', 'email' => ''));
+        $mapValues[1]  = array(null, array('name' => '', 'email' => ''));
+        $mapValues[2]  = array(true, array('name' => '', 'email' => ''));
+        $mapValues[3]  = array(false, array('name' => '', 'email' => ''));
+        $mapValues[4]  = array(null, array('name' => '', 'email' => ''));
+        $mapValues[5]  = array(1, array('name' => '', 'email' => ''));
+        $mapValues[6]  = array(3.1415, array('name' => '', 'email' => ''));
+        $mapValues[7]  = array('Hello world', array('name' => '', 'email' => ''));
 
         // "Valid" data
-        $mapValues[] = array('my@name.com', array('name' => '', 'email' => 'my@name.com'));
-        $mapValues[] = array('my%40name.com', array('name' => '', 'email' => 'my@name.com'));
-        $mapValues[] = array('My+Name+%3Cmy%40name.com%3E', array('name' => 'My Name', 'email' => 'my@name.com'));
-        $mapValues[] = array('+%22My%22+%3Cmy%40name.com%3E', array('name' => 'My', 'email' => 'my@name.com'));
-        $mapValues[] = array('=?utf-8?B?5L2p5ae/?= <my@name.com.tw>', array('name' => '佩姿', 'email' => 'my@name.com.tw'));
-        $mapValues[] = array('=?ISO-8859-1?Q?B=F8lla?=, med =?ISO-8859-1?Q?=F8l?= i baggen <my@name.com.tw>', array('name' => 'Bølla , med øl i baggen', 'email' => 'my@name.com.tw'));
-        $mapValues[] = array('=?iso-8859-1?Q?B=F8lla?=, med =?iso-8859-1?Q?=F8l?= i baggen <my@name.com.tw>', array('name' => 'Bølla , med øl i baggen', 'email' => 'my@name.com.tw'));
-        $mapValues[] = array('=?US-ASCII?Q?Keith_Moore?= <moore@cs.utk.edu>', array('name' => 'Keith Moore', 'email' => 'moore@cs.utk.edu'));
-        $mapValues[] = array('=?ISO-8859-1?Q?Andr=E9?= Pirard <PIRARD@vm1.ulg.ac.be>', array('name' => 'André Pirard', 'email' => 'PIRARD@vm1.ulg.ac.be'));
-        $mapValues[] = array('My Name <my@name.com>', array('name' => 'My Name', 'email' => 'my@name.com'));
-        $mapValues[] = array('"My Name" <my@name.com>', array('name' => 'My Name', 'email' => 'my@name.com'));
-        $mapValues[] = array(' "My" <my@name.com.ar>', array('name' => 'My', 'email' => 'my@name.com.ar'));
-        $mapValues[] = array('"My" < my@name.com> ', array('name' => 'My', 'email' => 'my@name.com'));
-        $mapValues[] = array(' "My"    <  my@name.com >   ', array('name' => 'My', 'email' => 'my@name.com'));
+        $mapValues[8]  = array('my@name.com', array('name' => '', 'email' => 'my@name.com'));
+        $mapValues[9]  = array('my%40name.com', array('name' => '', 'email' => 'my@name.com'));
+        $mapValues[10] = array('My+Name+%3Cmy%40name.com%3E', array('name' => 'My Name', 'email' => 'my@name.com'));
+        $mapValues[11] = array('+%22My%22+%3Cmy%40name.com%3E', array('name' => 'My', 'email' => 'my@name.com'));
+        $mapValues[12] = array('=?utf-8?B?5L2p5ae/?= <my@name.com.tw>', array('name' => '佩姿', 'email' => 'my@name.com.tw'));
+        $mapValues[13] = array('=?ISO-8859-1?Q?B=F8lla?=, med =?ISO-8859-1?Q?=F8l?= i baggen <my@name.com.tw>', array('name' => 'Bølla , med øl i baggen', 'email' => 'my@name.com.tw'));
+        $mapValues[14] = array('=?iso-8859-1?Q?B=F8lla?=, med =?iso-8859-1?Q?=F8l?= i baggen <my@name.com.tw>', array('name' => 'Bølla , med øl i baggen', 'email' => 'my@name.com.tw'));
+        $mapValues[15] = array('=?US-ASCII?Q?Keith_Moore?= <moore@cs.utk.edu>', array('name' => 'Keith Moore', 'email' => 'moore@cs.utk.edu'));
+        $mapValues[16] = array('=?ISO-8859-1?Q?Andr=E9?= Pirard <PIRARD@vm1.ulg.ac.be>', array('name' => 'André Pirard', 'email' => 'PIRARD@vm1.ulg.ac.be'));
+        $mapValues[17] = array('My Name <my@name.com>', array('name' => 'My Name', 'email' => 'my@name.com'));
+        $mapValues[18] = array('"My Name" <my@name.com>', array('name' => 'My Name', 'email' => 'my@name.com'));
+        $mapValues[19] = array(' "My" <my@name.com.ar>', array('name' => 'My', 'email' => 'my@name.com.ar'));
+        $mapValues[20] = array('"My" < my@name.com> ', array('name' => 'My', 'email' => 'my@name.com'));
+        $mapValues[21] = array(' "My"    <  my@name.com >   ', array('name' => 'My', 'email' => 'my@name.com'));
 
         return $mapValues;
     }
 
     /**
+     * Tests decomposeCompleteEmail function
+     *
      * @dataProvider provider_decomposeCompleteEmail
+     * @group decomposeCompleteEmail
      */
     public function test_decomposeCompleteEmail($email, $expected) {
         $result = $this->stringOperations->decomposeCompleteEmail($email);
-        $this->assertEquals($result, $expected);
+        $this->assertEquals($expected, $result);
     }
 
     /**
@@ -167,11 +178,14 @@ class stringOperationsTest extends \PHPUnit_Framework_TestCase {
     }
 
     /**
+     * Tests createSlug function
+     *
      * @dataProvider provider_createSlug
+     * @group createSlug
      */
     public function test_createSlug($string, $convertSlash, $expected) {
         $result = $this->stringOperations->createSlug($string, $convertSlash);
-        $this->assertEquals($result, $expected);
+        $this->assertEquals($expected, $result);
     }
 
     /**

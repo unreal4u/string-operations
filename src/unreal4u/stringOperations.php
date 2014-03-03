@@ -8,7 +8,7 @@ namespace unreal4u;
  * @package stringOperations
  * @author Camilo Sperberg
  * @copyright 2010 - 2014 Camilo Sperberg
- * @version 0.3.2
+ * @version 1.0.0
  * @license BSD License
  */
 class stringOperations {
@@ -17,7 +17,7 @@ class stringOperations {
      * The version of this class
      * @var string
      */
-    private $classVersion = '0.3.2';
+    private $classVersion = '1.0.0';
 
     /**
      * The maximum deviation a string is allowed to pass after the limit has been reached, in percentage
@@ -65,14 +65,41 @@ class stringOperations {
      * should be
      *
      * @param string $string
-     * @param string $delimiter
+     * @param array $delimiters One or more delimiters
      * @param int $limit
      * @return int
      */
-    protected function _strpos($string, $delimiter, $limit) {
+    protected function _getBestCandidates($string, array $delimiters, $limit) {
+        $candidates = array();
+
+        $minCharacterLimit = ceil(((100 - $this->maximumDeviation) * $limit) / 100);
+        foreach ($delimiters as $delimiter) {
+            if (!empty($delimiter)) {
+                $candidates[] = mb_strpos($string, $delimiter, $minCharacterLimit);
+            }
+        }
+
+        if (empty($candidates)) {
+            $candidates[] = $limit;
+        }
+
+        return $candidates;
+    }
+
+    /**
+     * Gets the best possible candidate, most close to the maximum limit
+     *
+     * @param int $limit
+     * @param float $maxCharacterLimit
+     * @param array $candidates
+     * @return int
+     */
+    protected function _getClosestOffset($limit, $maxCharacterLimit, array $candidates) {
         $return = $limit;
-        if ($delimiter !== '') {
-            $return = mb_strpos($string, $delimiter, $limit);
+        foreach ($candidates as $candidate) {
+            if ($candidate <= $maxCharacterLimit) {
+                return $candidate;
+            }
         }
 
         return $return;
@@ -82,12 +109,18 @@ class stringOperations {
      * Gets the absolute maximum of characters that are allowed, or any number below that
      *
      * @param int $limit
-     * @param int $number
+     * @param array $number
      * @return int
      */
-    protected function _getMaximumOffset($limit, $number=0) {
+    protected function _getMaximumOffset($limit, array $candidates=array()) {
         // Absolute maximum number of characters
         $maxCharacterLimit = ceil(((100 + $this->maximumDeviation) * $limit) / 100);
+        if (count($candidates) > 1) {
+            $number = $this->_getClosestOffset($limit, $maxCharacterLimit, $candidates);
+        } else {
+            $number = reset($candidates);
+        }
+
         if ($number !== false && $number < $maxCharacterLimit) {
             $maxCharacterLimit = $number;
         }
@@ -128,20 +161,24 @@ class stringOperations {
      *
      * @param string $string
      * @param int $limit Defaults to 150 characters
-     * @param string $delimiter Defaults to a space
+     * @param array $delimiters Defaults to a space
      * @param string $append Defaults to three dots
      */
-    public function truncate($string, $limit=150, $delimiter=' ', $append='...') {
+    public function truncate($string, $limit=150, $delimiters=array(' '), $append='...') {
         $return = $string;
         $stringLength = mb_strlen($string);
 
         if ($stringLength > $limit) {
-            $until = $this->_getMaximumOffset($limit, $this->_strpos($string, $delimiter, $limit));
+            if (is_string($delimiters)) {
+                $delimiters = array($delimiters);
+            }
+
+            $until = $this->_getMaximumOffset($limit, $this->_getBestCandidates($string, $delimiters, $limit));
             $return = mb_substr($string, 0, $until);
 
             // Do not append if the resulting string is exactly the same as it came in
             if ($return !== $string) {
-                   $return .= $append;
+                $return .= $append;
             }
         }
 
