@@ -83,6 +83,11 @@ Version History
     * Travis-CI support
     * Gitattributes
     * Documentation fixes
+* 1.0.0:
+    * Truncate function improvements and BC breaks
+        * This function can now search backwards in the string
+        * This function now supports multiple separators
+    * Excluded some things from a package
 
 Contact the author
 -------
