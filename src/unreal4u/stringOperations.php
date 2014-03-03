@@ -70,13 +70,32 @@ class stringOperations {
      * @return int
      */
     protected function _strpos($string, array $delimiters, $limit) {
-        $return = $limit;
+        $candidates = array();
         foreach ($delimiters as $delimiter) {
             if (!empty($delimiter)) {
-                $tmp = mb_strpos($string, $delimiter, $limit);
-                if ($tmp < $return || empty($tmp)) {
-                   $return = $tmp;
-                }
+                $candidates[] = mb_strpos($string, $delimiter, $limit);
+            }
+        }
+        if (empty($candidates)) {
+            $candidates[] = $limit;
+        }
+
+        return $candidates;
+    }
+
+    /**
+     * Gets the best possible candidate, most close to the maximum limit
+     *
+     * @param int $limit
+     * @param float $maxCharacterLimit
+     * @param array $candidates
+     * @return int
+     */
+    protected function _getClosestOffset($limit, $maxCharacterLimit, array $candidates) {
+        $return = $limit;
+        foreach ($candidates as $candidate) {
+            if ($candidate <= $maxCharacterLimit) {
+                return $candidate;
             }
         }
 
@@ -87,13 +106,19 @@ class stringOperations {
      * Gets the absolute maximum of characters that are allowed, or any number below that
      *
      * @param int $limit
-     * @param int $number
+     * @param array $number
      * @return int
      */
-    protected function _getMaximumOffset($limit, $number=0) {
+    protected function _getMaximumOffset($limit, array $candidates=array()) {
         // Absolute maximum number of characters
         $maxCharacterLimit = ceil(((100 + $this->maximumDeviation) * $limit) / 100);
-        if ($number !== false && $number < $maxCharacterLimit) {
+        if (count($candidates) > 1) {
+            $number = $this->_getClosestOffset($limit, $maxCharacterLimit, $candidates);
+        } else {
+            $number = reset($candidates);
+        }
+
+        if ($number < $maxCharacterLimit) {
             $maxCharacterLimit = $number;
         }
 

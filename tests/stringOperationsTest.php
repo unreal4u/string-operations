@@ -73,18 +73,21 @@ class stringOperationsTest extends \PHPUnit_Framework_TestCase {
 
         // Added on 2014-02-24, multiple delimiters
         $mapValues[21] = array('Hello, this must be some spectacular -a: test-', 37, array('-', ':', ' '), '...', 10, 'Hello, this must be some spectacular ...');
-        $mapValues[21] = array('Hello, this must be some spectacular -a: test-', 37, array(':', '-', ' '), '...', 10, 'Hello, this must be some spectacular -a...');
+        $mapValues[22] = array('Hello, this must be some spectacular -a: test-', 37, array(':', '-', ' '), '...', 10, 'Hello, this must be some spectacular -a...');
 
         return $mapValues;
     }
 
     /**
+     * Tests truncate function
+     *
      * @dataProvider provider_truncate
+     * @group truncate
      */
     public function test_truncate($string, $limit, $delimiter, $append, $deviation, $expected) {
         $this->stringOperations->maximumDeviation = $deviation;
         $result = $this->stringOperations->truncate($string, $limit, $delimiter, $append);
-        $this->assertEquals($result, $expected);
+        $this->assertEquals($expected, $result);
     }
 
     /**
@@ -122,11 +125,14 @@ class stringOperationsTest extends \PHPUnit_Framework_TestCase {
     }
 
     /**
+     * Tests decomposeCompleteEmail function
+     *
      * @dataProvider provider_decomposeCompleteEmail
+     * @group decomposeCompleteEmail
      */
     public function test_decomposeCompleteEmail($email, $expected) {
         $result = $this->stringOperations->decomposeCompleteEmail($email);
-        $this->assertEquals($result, $expected);
+        $this->assertEquals($expected, $result);
     }
 
     /**
@@ -171,11 +177,14 @@ class stringOperationsTest extends \PHPUnit_Framework_TestCase {
     }
 
     /**
+     * Tests createSlug function
+     *
      * @dataProvider provider_createSlug
+     * @group createSlug
      */
     public function test_createSlug($string, $convertSlash, $expected) {
         $result = $this->stringOperations->createSlug($string, $convertSlash);
-        $this->assertEquals($result, $expected);
+        $this->assertEquals($expected, $result);
     }
 
     /**
