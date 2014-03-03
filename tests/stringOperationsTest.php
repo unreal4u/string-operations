@@ -1,6 +1,5 @@
 <?php
 
-require 'vendor/autoload.php';
 require 'src/unreal4u/stringOperations.php';
 
 /**
@@ -136,18 +135,37 @@ class stringOperationsTest extends \PHPUnit_Framework_TestCase {
      * @return array
      */
     public function provider_createSlug() {
-        $mapValues[1]  = array('hello', false, 'hello');
-        $mapValues[2]  = array('hello', true, 'hello');
-        $mapValues[3]  = array('/hello/', false, '/hello/');
-        $mapValues[4]  = array('/hello/', true, 'hello');
-        $mapValues[5]  = array('hello/world', false, 'hello/world');
-        $mapValues[6]  = array('hello/world', true, 'hello-world');
-        $mapValues[7]  = array('hélló wórld', false, 'hello-world');
-        $mapValues[8]  = array('hélló wórld', true, 'hello-world');
-        $mapValues[9]  = array('hello-----world', false, 'hello-world');
-        $mapValues[10] = array('hello-----world', true, 'hello-world');
-        $mapValues[11] = array('hello/////world', false, 'hello/world');
-        $mapValues[12] = array('hello/////world', true, 'hello-world');
+        // Testing invalid data
+        $mapValues[]  = array('', true, '');
+        $mapValues[]  = array('', false, '');
+        $mapValues[]  = array(true, true, '');
+        $mapValues[]  = array(false, true, '');
+        $mapValues[]  = array(null, true, '');
+        $mapValues[]  = array(array(), true, '');
+
+        // Testing normal usage cases
+        $mapValues[]  = array('hello', false, 'hello');
+        $mapValues[]  = array('hello', true, 'hello');
+        $mapValues[]  = array('/hello/', false, '/hello/');
+        $mapValues[] = array('/hello/', true, 'hello');
+        $mapValues[] = array('hello/world', false, 'hello/world');
+        $mapValues[] = array('hello/world', true, 'hello-world');
+        $mapValues[] = array('hélló wórld', false, 'hello-world');
+        $mapValues[] = array('hélló wórld', true, 'hello-world');
+        $mapValues[] = array('hello-----world', false, 'hello-world');
+        $mapValues[] = array('hello-----world', true, 'hello-world');
+        $mapValues[] = array('hello/////world', false, 'hello/world');
+        $mapValues[] = array('hello/////world', true, 'hello-world');
+        $mapValues[] = array('   hello__world   ', false, 'hello-world');
+        $mapValues[] = array('   hello__world   ', true, 'hello-world');
+
+        // Testing edge-cases
+        $mapValues[] = array('𠜎𠜱𠝹𠱓', false, '');
+        $mapValues[] = array('مرحبا cruel العالم', false, 'cruel');
+        $mapValues[] = array('.,/a<\\!"#$%&/()=?¡+{}[]b>-_', true, 'a-b');
+        $mapValues[] = array('.,/a<\\!"#$%&/()=?¡+{}[]b>-_', false, '/a/b');
+        $mapValues[] = array('////a b//-/cd////', true, 'a-b-cd');
+        $mapValues[] = array('////a b//-/cd////e/f///', false, '/a-b/cd/e/f/');
 
         return $mapValues;
     }

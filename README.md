@@ -1,3 +1,7 @@
+[![Latest Stable Version](https://poser.pugx.org/unreal4u/string-operations/v/stable.png)](https://packagist.org/packages/unreal4u/string-operations)
+[![Build Status](https://travis-ci.org/unreal4u/string-operations.png?branch=master)](https://travis-ci.org/unreal4u/string-operations)
+[![License](https://poser.pugx.org/unreal4u/string-operations/license.png)](https://packagist.org/packages/unreal4u/string-operations)
+
 stringOperations.php
 ======
 
@@ -38,14 +42,8 @@ This class has support for Composer install. Just add the following section to y
 
 <pre>
 {
-    "repositories": [
-        {
-            "type": "vcs",
-            "url": "https://github.com/unreal4u/stringOperations"
-        }
-    ],
     "require": {
-        "unreal4u/stringOperations": "@stable"
+        "unreal4u/string-operations": "@stable"
     }
 }
 </pre>
@@ -62,7 +60,8 @@ Pending
 ---------
 * Search for more loose functions spattered around my codebase
 * Improve the usage of the internal used charset
-* Consistent usage of the class and it subcomponents
+* Consistent usage of the class and it subcomponents (UTF-8 in createSlug)
+* Multiple arguments for separator in truncate function
 
 Version History
 ----------
@@ -80,6 +79,10 @@ Version History
     * Documentation and examples update
 * 0.3.1:
     * Renamed repo and moved PHPUnit as dependency
+* 0.3.2:
+    * Travis-CI support
+    * Gitattributes
+    * Documentation fixes
 
 Contact the author
 -------

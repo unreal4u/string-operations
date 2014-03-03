@@ -1,0 +1,4 @@
+tests/ export-ignore
+vendor/ export-ignore
+.git* export-ignore
+*.php diff=php
