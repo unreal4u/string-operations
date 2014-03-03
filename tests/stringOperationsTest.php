@@ -76,6 +76,9 @@ class stringOperationsTest extends \PHPUnit_Framework_TestCase {
         $mapValues[22] = array('Hello, this must be some spectacular -a: test-', 37, array(':', '-', ' '), '...', 10, 'Hello, this must be some spectacular -a...');
         $mapValues[23] = array('Hello, this must be some spectacular a: test-',  37, array('-', ' ', ':'), '...', 10, 'Hello, this must be some spectacular...');
 
+        $mapValues[24] = array('Youwillnotfindanythinghere', 10, array(' ', ',', '.', '_'), '...', 0, 'Youwillnot...');
+        $mapValues[25] = array('Youwillnotfindanythinghere', 10, array(' ', ',', '.', '_'), '...', 10, 'Youwillnot...');
+
         return $mapValues;
     }
 

@@ -97,7 +97,7 @@ class stringOperations {
     protected function _getClosestOffset($limit, $maxCharacterLimit, array $candidates) {
         $return = $limit;
         foreach ($candidates as $candidate) {
-            if ($candidate <= $maxCharacterLimit) {
+            if ($candidate !== false && $candidate <= $maxCharacterLimit) {
                 return $candidate;
             }
         }
