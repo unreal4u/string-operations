@@ -118,7 +118,7 @@ class stringOperations {
             $number = reset($candidates);
         }
 
-        if ($number < $maxCharacterLimit) {
+        if ($number !== false && $number < $maxCharacterLimit) {
             $maxCharacterLimit = $number;
         }
 
