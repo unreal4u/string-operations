@@ -11,6 +11,7 @@ $testEmails = array(
 
 $stringOperations = new unreal4u\stringOperations();
 
+$output = array();
 foreach ($testEmails as $testEmail) {
     $output[] = $stringOperations->decomposeCompleteEmail($testEmail);
 }

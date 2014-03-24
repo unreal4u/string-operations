@@ -25,6 +25,7 @@ echo '</pre>';
 $testArray = array('Cañete', 'Föllinge', 'ÑÖÑÚ', '漢A字BC', '汉A字BC', '𠜎𠜱𠝹𠱓');
 $stringOperations->maximumDeviation = 0;
 
+$output = array();
 foreach ($testArray as $testString) {
     $output[$testString] = $stringOperations->truncate($testString, 3, '', '');
 }

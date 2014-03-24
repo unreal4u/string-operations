@@ -212,6 +212,7 @@ class stringOperations {
     public function mimeHeaderDecode($text) {
         $explodedText = explode('=?', $text);
 
+        $finalResult = array();
         foreach ($explodedText as $partialText) {
             if (!empty($partialText)) {
                 $resultArray = new \stdClass();

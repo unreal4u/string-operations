@@ -1,5 +1,6 @@
 [![Latest Stable Version](https://poser.pugx.org/unreal4u/string-operations/v/stable.png)](https://packagist.org/packages/unreal4u/string-operations)
 [![Build Status](https://travis-ci.org/unreal4u/string-operations.png?branch=master)](https://travis-ci.org/unreal4u/string-operations)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/unreal4u/string-operations/badges/quality-score.png?s=bda9bffddbd3a8fb7f24782c42dfd4d57ea0d2d8)](https://scrutinizer-ci.com/g/unreal4u/string-operations/)
 [![License](https://poser.pugx.org/unreal4u/string-operations/license.png)](https://packagist.org/packages/unreal4u/string-operations)
 
 stringOperations.php
