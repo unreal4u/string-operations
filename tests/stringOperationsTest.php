@@ -124,6 +124,7 @@ class stringOperationsTest extends \PHPUnit_Framework_TestCase {
         $mapValues[19] = array(' "My" <my@name.com.ar>', array('name' => 'My', 'email' => 'my@name.com.ar'));
         $mapValues[20] = array('"My" < my@name.com> ', array('name' => 'My', 'email' => 'my@name.com'));
         $mapValues[21] = array(' "My"    <  my@name.com >   ', array('name' => 'My', 'email' => 'my@name.com'));
+        $mapValues[22] = array('my+name@test.com', array('name' => '', 'email' => 'my+name@test.com'));
 
         return $mapValues;
     }
