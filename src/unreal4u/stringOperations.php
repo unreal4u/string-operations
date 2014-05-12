@@ -255,7 +255,7 @@ class stringOperations {
      */
     public function decomposeCompleteEmail($email) {
         $return = array('name' => '', 'email' => '');
-        $email = urldecode($email);
+        $email = urldecode(str_replace('+', '%2B', $email));
         if (is_string($email) && mb_strpos($email, '@') !== false) {
             $return['email'] = trim(str_replace(array('<', '>'), '', mb_substr($email, mb_strrpos($email, '<'))));
             $decomposedName  = trim(str_replace('"', '', mb_substr($email, 0, mb_strrpos($email, '<'))));
