@@ -9,7 +9,7 @@ stringOperations.php
 Credits
 --------
 
-This class is made by unreal4u (Camilo Sperberg). [http://unreal4u.com/](unreal4u.com)
+This class is made by unreal4u (Camilo Sperberg). [unreal4u.com/](http://unreal4u.com/)
 
 About this class
 --------
@@ -63,6 +63,7 @@ Pending
 * Improve the usage of the internal used charset
 * Consistent usage of the class and it subcomponents (UTF-8 in createSlug)
 * Multiple arguments for separator in truncate function
+* Use transliterate instead of htmlentities (Will produce BC!)
 
 Version History
 ----------
